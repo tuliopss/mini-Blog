@@ -1,12 +1,30 @@
 import styles from "./Post.module.css";
 
 import { useParams } from "react-router-dom";
+import { useFetchOneDocument } from "../../hooks/useFetchOneDocument";
 
 const Post = () => {
   const { id } = useParams();
+  const { document: post, loading } = useFetchOneDocument("posts", id);
   return (
-    <div>
-      <h1>Post {id}</h1>
+    <div className={styles.post_container}>
+      {loading && <p>Carregando...</p>}
+      {post && (
+        <>
+          <h1>{post.title}</h1>
+          <img src={post.image} alt={post.title} />
+          <p>{post.body}</p>
+          <h3>Esse post trata sobre: </h3>
+          <div className={styles.tags}>
+            {post.tagsArray.map((tag) => (
+              <p key={tag}>
+                <span>#</span>
+                {tag}
+              </p>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };
